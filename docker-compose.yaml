@@ -1,0 +1,22 @@
+services:
+  nextjs-app:
+    image: nextjs-app
+    pull_policy: never
+    container_name: nextjs-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    develop:
+      watch:
+        - action: sync
+          path: src/
+          target: /app/src
+          ignore:
+            - node_modules/
+            - .git/
+        - action: rebuild
+          path: package.json
