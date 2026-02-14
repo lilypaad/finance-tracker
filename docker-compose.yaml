@@ -20,3 +20,18 @@ services:
             - .git/
         - action: rebuild
           path: package.json
+        - action: restart
+          path: .env
+
+  postgres:
+    image: postgres:18.2-alpine
+    container_name: nextjs-app-db
+    restart: always
+    shm_size: 128mb
+    volumes: 
+      - postgres-data:/data/db
+    env_file:
+      - .env
+
+volumes:
+  postgres-data:
