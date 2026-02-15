@@ -3,15 +3,21 @@
 import "server-only";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { EncryptJWT, jwtVerify, SignJWT } from "jose";
+import { NextRequest, NextResponse } from "next/server";
+import { jwtVerify, SignJWT } from "jose";
 import * as z from "zod";
 
-import { LoginFormSchema, LoginFormState } from "@/schemas/login-form";
-import { log } from "console";
+import { LoginFormSchema, } from "@/schemas/login-form";
 
 const secretKey = process.env.AUTH_SECRET_KEY;
 const key = new TextEncoder().encode(secretKey);
-const SESSION_EXPIRY = 10 * 1000;
+const SESSION_EXPIRY = 24 * 60 * 60 * 1000;
+
+interface SessionInfo {
+    userId: string,
+    role: string,
+    email?: string,
+}
 
 /*
     Authentication server actions
@@ -27,11 +33,12 @@ export async function login(formData: z.infer<typeof LoginFormSchema>) {
 
     // FIXME: grab user id from db
     const user = { 
-        id: "100",
+        userId: "100",
         role: "user",
-    };
+        email: email,
+    } as SessionInfo;
 
-    await createSession(user.id);
+    await createSession(user);
     redirect("/");
 }
 
@@ -44,14 +51,14 @@ export async function logout() {
     Session management functions
 */
 
-export async function createSession(userId: string) {
+export async function createSession(data: SessionInfo) {
     const expiresAt = new Date(Date.now() + SESSION_EXPIRY);
-    const session = await sign({ userId, expiresAt });
+    const session = await sign(data);
     const cookieStore = await cookies();
     cookieStore.set("session", session, { 
-        expires: expiresAt, 
-        secure: process.env.NODE_ENV === "production",
         httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        expires: expiresAt, 
         sameSite: "lax",
         path: "/",
     });
@@ -65,17 +72,19 @@ export async function getSession() {
     return await decrypt(session);
 }
 
-export async function updateSession() {
-    const session = (await cookies()).get("session")?.value;
-    const payload = await decrypt(session);
-    if(!session || !payload) {
+export async function updateSession(req: NextRequest) {
+    const session = req.cookies.get("session")?.value;
+    if(!session)
         return;
-    }
+
+    const payload = await decrypt(session);
+    if(!session || !payload)
+        return;
 
     const expiresAt = new Date(Date.now() + SESSION_EXPIRY);
-
     const cookieStore = await cookies();
-    cookieStore.set("session", session, {
+    cookieStore.delete("session");
+    cookieStore.set("session", payload, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         expires: expiresAt,
@@ -97,7 +106,7 @@ export async function sign(payload: any) {
     return await new SignJWT(payload)
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
-      .setExpirationTime('10s')
+      .setExpirationTime('2d')
       .sign(key);
 }
 

@@ -38,7 +38,7 @@ export default function LogInForm() {
   const [state, action, isPending] = useActionState(login, undefined);
 
   return (
-    <form className="w-full space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+    <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
       <FieldGroup>
         <Controller
           control={form.control}
@@ -63,12 +63,9 @@ export default function LogInForm() {
             </Field>
           )}
         />
-
-        <Field>
-          <Button type="submit">Log In</Button>
-          <Button variant="outline" disabled>Sign in with Google</Button>
-        </Field>
       </FieldGroup>
+      <Button type="submit">Log In</Button>
+      <Button variant="outline" disabled>Sign in with Google</Button>
     </form>
   );
 }
