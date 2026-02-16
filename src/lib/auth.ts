@@ -13,7 +13,7 @@ const secretKey = process.env.AUTH_SECRET_KEY;
 const key = new TextEncoder().encode(secretKey);
 const SESSION_EXPIRY = 24 * 60 * 60 * 1000;
 
-interface SessionInfo {
+interface UserInfo {
     userId: string,
     role: string,
     email?: string,
@@ -36,7 +36,7 @@ export async function login(formData: z.infer<typeof LoginFormSchema>) {
         userId: "100",
         role: "user",
         email: email,
-    } as SessionInfo;
+    } as UserInfo;
 
     await createSession(user);
     redirect("/");
@@ -51,9 +51,9 @@ export async function logout() {
     Session management functions
 */
 
-export async function createSession(data: SessionInfo) {
+export async function createSession(data: UserInfo) {
     const expiresAt = new Date(Date.now() + SESSION_EXPIRY);
-    const session = await sign(data);
+    const session = await sign({ user: data });
     const cookieStore = await cookies();
     cookieStore.set("session", session, { 
         httpOnly: true,
