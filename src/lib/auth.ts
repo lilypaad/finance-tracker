@@ -70,8 +70,10 @@ export async function login(formData: z.infer<typeof LoginFormSchema>) {
 
     // grab user id from db
     const db = drizzle({ connection: process.env.DRIZZLE_DATABASE_URL!, casing: "snake_case"});
-    const [user]: typeof users.$inferSelect = await db
-        .select().from(users).where(eq(users.email, email));
+    const [user]: typeof users.$inferSelect = await db.select().from(users).where(eq(users.email, email));
+    if(!user) {
+        return { errors: "Invalid email/password combination" }
+    }
 
     // password check
     if(!(await verifyPasswordHash(user.passwordHash, user.passwordSalt, password))) {
