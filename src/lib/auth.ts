@@ -14,18 +14,11 @@ import { generateRandomString } from "@oslojs/crypto/random";
 import type { RandomReader } from "@oslojs/crypto/random";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 const secretKey = process.env.AUTH_SECRET_KEY;
 const key = new TextEncoder().encode(secretKey);
 const SESSION_EXPIRY = 24 * 60 * 60 * 1000;
-
-interface UserInfo {
-    userId: string,
-    role: string,
-    email?: string,
-    firstName?: string,
-    lastName?: string,
-}
 
 /*
     Authentication server actions
@@ -37,11 +30,13 @@ export async function signup(formData: z.infer<typeof SignupFormSchema>) {
     const firstName = formData.firstName;
     const lastName = formData.lastName;
     
+    // validate fields
     const validatedFields = SignupFormSchema.safeParse({ email, password, firstName, lastName });
     if(!validatedFields.success) {
         return { errors: validatedFields.error.flatten().fieldErrors }
     }
     
+    // generate salt & hash password 
     const random: RandomReader = {
         read(bytes) {
             crypto.getRandomValues(bytes);
@@ -65,7 +60,7 @@ export async function signup(formData: z.infer<typeof SignupFormSchema>) {
         .onConflictDoNothing()
         .returning({ insertedId: users.id });
     if(!data) {
-        return { message: "An error occurred creating your account" };
+        return { errors: "An error occurred creating your account" };
     }
 }
 
@@ -73,12 +68,15 @@ export async function login(formData: z.infer<typeof LoginFormSchema>) {
     const email = formData.email;
     const password = formData.password;
 
-    // FIXME: grab user id from db
-    const user = { 
-        userId: "100",
-        role: "user",
-        email: email,
-    } as UserInfo;
+    // grab user id from db
+    const db = drizzle({ connection: process.env.DRIZZLE_DATABASE_URL!, casing: "snake_case"});
+    const [user]: typeof users.$inferSelect = await db
+        .select().from(users).where(eq(users.email, email));
+
+    // password check
+    if(!(await verifyPasswordHash(user.passwordHash, user.passwordSalt, password))) {
+        return { errors: "Invalid email/password combination" }
+    }
 
     await createSession(user);
     redirect("/");
@@ -93,9 +91,9 @@ export async function logout() {
     Session management functions
 */
 
-export async function createSession(data: UserInfo) {
+export async function createSession(user: typeof users.$inferSelect) {
     const expiresAt = new Date(Date.now() + SESSION_EXPIRY);
-    const session = await sign({ user: data });
+    const session = await sign({ user: user });
     const cookieStore = await cookies();
     cookieStore.set("session", session, { 
         httpOnly: true,
@@ -149,8 +147,8 @@ export async function hashPassword(password: string): Promise<string> {
     });
 }
 
-export async function verifyPasswordHash(hash:string, password: string): Promise<boolean> {
-    return await verify(hash, password);
+export async function verifyPasswordHash(hash: string, salt: string, password: string): Promise<boolean> {
+    return await verify(hash, password + salt);
 }
 
 /*

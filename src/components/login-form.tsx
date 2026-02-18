@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -19,7 +20,13 @@ import { LoginFormSchema } from '@/schemas/login-form';
 
 export default function LogInForm() {
   async function onSubmit(data: z.infer<typeof LoginFormSchema>) {
-    await login(data);
+    const result = await login(data);
+    if(result?.errors) {
+      form.setError("root", { message: "Login failed. Please re-enter your email and password."});
+      return;
+    }
+    
+    redirect("/");
   }
 
   const form = useForm<z.infer<typeof LoginFormSchema>>({
@@ -58,8 +65,11 @@ export default function LogInForm() {
           )}
         />
       </FieldGroup>
+      {form.formState.errors.root && ( <FieldError>
+        {form.formState.errors.root.message}
+      </FieldError> )}
       <div className="flex flex-col gap-y-3">
-        <Button type="submit">Log In</Button>
+        <Button type="submit" disabled={form.formState.isSubmitting}>Log In</Button>
       </div>
     </form>
     <div className="flex flex-col gap-y-3 mt-3">
