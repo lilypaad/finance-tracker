@@ -1,12 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 import { Input } from '@/components/ui/input';
 import { Button } from "@/components/ui/button";
-
 import {
   Field,
   FieldError,
@@ -31,6 +31,7 @@ export default function LogInForm() {
   });
 
   return (
+    <>
     <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
       <FieldGroup>
         <Controller
@@ -57,8 +58,16 @@ export default function LogInForm() {
           )}
         />
       </FieldGroup>
-      <Button type="submit">Log In</Button>
-      <Button variant="outline" disabled>Sign in with Google</Button>
+      <div className="flex flex-col gap-y-3">
+        <Button type="submit">Log In</Button>
+      </div>
     </form>
+    <div className="flex flex-col gap-y-3 mt-3">
+      <Button variant="outline" disabled>Sign in with Google</Button>
+      <Button asChild variant="outline">
+          <Link href="/signup">Sign up</Link>
+      </Button>
+    </div>
+    </>
   );
 }
