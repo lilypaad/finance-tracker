@@ -30,12 +30,6 @@ export async function signup(formData: z.infer<typeof SignupFormSchema>) {
     const firstName = formData.firstName;
     const lastName = formData.lastName;
     
-    // validate fields
-    const validatedFields = SignupFormSchema.safeParse({ email, password, firstName, lastName });
-    if(!validatedFields.success) {
-        return { errors: validatedFields.error.flatten().fieldErrors }
-    }
-    
     // generate salt & hash password 
     const random: RandomReader = {
         read(bytes) {
@@ -55,12 +49,12 @@ export async function signup(formData: z.infer<typeof SignupFormSchema>) {
         passwordHash: passwordHash,
         passwordSalt: passwordSalt,
     };
-    const data = await db.insert(users)
+    const [data] = await db.insert(users)
         .values(user)
         .onConflictDoNothing()
         .returning({ insertedId: users.id });
     if(!data) {
-        return { errors: "An error occurred creating your account" };
+        return { errors: { root: "An error occurred creating your account" } };
     }
 }
 
@@ -81,7 +75,6 @@ export async function login(formData: z.infer<typeof LoginFormSchema>) {
     }
 
     await createSession(user);
-    redirect("/");
 }
 
 export async function logout() {

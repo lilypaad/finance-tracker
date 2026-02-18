@@ -18,11 +18,6 @@ import { SignupFormSchema } from "@/schemas/signup-form";
 import { redirect } from "next/navigation";
 
 export default function SignupForm() {
-  async function onSubmit(data: z.infer<typeof SignupFormSchema>) {
-    await signup(data);
-    redirect("/");
-  }
-
   const form = useForm<z.infer<typeof SignupFormSchema>>({
     resolver: zodResolver(SignupFormSchema),
     defaultValues: {
@@ -32,6 +27,16 @@ export default function SignupForm() {
       lastName: "",
     },
   });
+
+  async function onSubmit(data: z.infer<typeof SignupFormSchema>) {
+    const result = await signup(data);
+    if(result?.errors) {
+      form.setError("root", { message: result.errors.root });
+      return;
+    }
+
+    redirect("/");
+  }
 
   return (
     <>
@@ -87,10 +92,12 @@ export default function SignupForm() {
           />
         </div>
       </FieldGroup>
+      {form.formState.errors.root && ( <FieldError>
+        {form.formState.errors.root.message}
+      </FieldError> )}
       <div className="flex flex-col gap-y-3">
         <Button type="submit">Sign up</Button>
       </div>
-      {/* <Button variant="outline" disabled>Sign in with Google</Button> */}
     </form>
     </>
   );
