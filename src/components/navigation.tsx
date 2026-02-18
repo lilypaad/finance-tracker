@@ -8,6 +8,7 @@ import {
   Sheet,
   SheetContent,
   SheetTrigger,
+  SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
@@ -53,13 +54,15 @@ export function Navigation() {
       <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
         <SheetTrigger>
           <Button
+            asChild
             variant="outline"
             size="sm"
             className="font-normal bg-white/10 hover:bg-white/20 hover:text-white border-none focus-visible:ring-offset-0 focus-visible:ring-transparent outline-none text-white focus:bg-white/30 transition"
           >
-            <Menu className="size-4" />
+            <Menu className="size-10" />
           </Button>
         </SheetTrigger>
+        <SheetTitle></SheetTitle>
         <SheetContent side="left" className="px-2">
           <nav className="flex flex-col gap-y-2 pt-12">
             {routes.map((r) => (
