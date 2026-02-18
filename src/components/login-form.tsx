@@ -19,16 +19,6 @@ import { login } from "@/lib/auth";
 import { LoginFormSchema } from '@/schemas/login-form';
 
 export default function LogInForm() {
-  async function onSubmit(data: z.infer<typeof LoginFormSchema>) {
-    const result = await login(data);
-    if(result?.errors) {
-      form.setError("root", { message: "Login failed. Please re-enter your email and password."});
-      return;
-    }
-    
-    redirect("/");
-  }
-
   const form = useForm<z.infer<typeof LoginFormSchema>>({
     resolver: zodResolver(LoginFormSchema),
     defaultValues: {
@@ -36,6 +26,16 @@ export default function LogInForm() {
       password: "",
     },
   });
+
+  async function onSubmit(data: z.infer<typeof LoginFormSchema>) {
+    const result = await login(data);
+    if(result?.errors) {
+      form.setError("root", { message: result.errors });
+      return;
+    }
+    
+    redirect("/");
+  }
 
   return (
     <>
