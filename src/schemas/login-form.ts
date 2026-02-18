@@ -4,8 +4,7 @@ export const LoginFormSchema = z.object({
     email: z.email({ error: "Please enter a valid email" }).trim(),
     password: z
       .string()
-      .min(8, { error: "Password must be at least 8 characters" })
-      .max(64, { error: "Password must be at most 64 characters" })
+      .min(1, { error: "Please enter your password" })
       .trim(),
 });
 
