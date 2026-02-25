@@ -88,7 +88,8 @@ export async function logout() {
 
 export async function createSession(user: typeof users.$inferSelect) {
     const expiresAt = new Date(Date.now() + SESSION_EXPIRY);
-    const session = await sign({ user: user });
+    const { passwordHash, passwordSalt, ...rest } = user;
+    const session = await sign({ user: rest });
     const cookieStore = await cookies();
     cookieStore.set("session", session, { 
         httpOnly: true,
