@@ -32,7 +32,7 @@ export const users = pgTable(
 export const accounts = pgTable(
   "accounts", 
   {
-    id: varchar("id").primaryKey(),
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
     name: varchar("name").notNull(),
     userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }),
   },
