@@ -28,3 +28,12 @@ export const users = pgTable(
   }, 
   (table) => [ uniqueIndex("email_idx").on(table.email) ]
 );
+
+export const accounts = pgTable(
+  "accounts", 
+  {
+    id: varchar("id").primaryKey(),
+    name: varchar("name").notNull(),
+    userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }),
+  },
+);

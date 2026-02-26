@@ -15,6 +15,20 @@
       "when": 1771433266130,
       "tag": "0001_fair_mongoose",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1772096316908,
+      "tag": "0002_tidy_impossible_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1772097433887,
+      "tag": "0003_smart_mandroid",
+      "breakpoints": true
     }
   ]
 }
