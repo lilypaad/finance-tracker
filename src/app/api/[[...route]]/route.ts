@@ -12,7 +12,7 @@ const app = new Hono<{ Variables: JwtVariables }>().basePath("/api");
 
 app.use("/*", (c, next) => {
   const jwtMiddleware = jwt({
-    secret: process.env.AUTH_SECRET_KEY as string,
+    secret: process.env.AUTH_SECRET_KEY!,
     alg: "HS256",
     cookie: "session",
   });
