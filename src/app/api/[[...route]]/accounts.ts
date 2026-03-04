@@ -21,7 +21,7 @@ const app = new Hono()
       userId: accounts.userId,
     })
     .from(accounts)
-    .where(eq(accounts.id, auth.user.id));
+    .where(eq(accounts.userId, auth.user.id));
 
     return c.json({ data });
   })
