@@ -16,8 +16,12 @@ export async function Header() {
           </div>
           {session && <LogoutButton />}
         </div>
+      {session && (
+          <h1 className="text-2xl lg:text-4xl text-white font-medium">
+            Welcome back, {session.user.firstName}
+          </h1>
+      )}
       </div>
-      {session && <h1 className="text-2xl lg:text-4xl text-white font-medium">Welcome back</h1>}
     </header>
-  )
+  );
 };
