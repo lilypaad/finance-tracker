@@ -40,4 +40,14 @@ export const accounts = pgTable(
   },
 );
 
+export const categories = pgTable(
+  "categories",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    name: varchar("name").notNull(),
+    userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }),
+  }
+)
+
 export const insertAccountSchema = createInsertSchema(accounts);
+export const insertCategorySchema = createInsertSchema(categories);
