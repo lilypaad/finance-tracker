@@ -31,8 +31,8 @@ export function NewAccountSheet() {
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="space-y-4">
-        <SheetHeader>
+      <SheetContent className="space-y-4 px-4">
+        <SheetHeader className="px-0">
           <SheetTitle>
             New Account
           </SheetTitle>

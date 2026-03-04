@@ -35,7 +35,7 @@ function AccountsPage() {
   
   return (
     <div className="max-w-screen-2xl mx-auto w-full pb-10 -mt-24">
-      <Card className="border-none drop-shadow-sm">
+      <Card className="border-none drop-shadow-sm px-4 py-6">
         <CardHeader className="gap-y-2 lg:flex lg:flex-row lg:items-center lg:justify-between">
           <CardTitle className="text-xl line-clamp-1">
             Accounts
