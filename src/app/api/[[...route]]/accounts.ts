@@ -127,6 +127,33 @@ const app = new Hono()
       
       return c.json({ data });
     }
+  )
+  .delete("/:id",
+    zValidator("param", z.object({ id: z.string().optional(), })),
+    async (c) => {
+      const auth = c.get("jwtPayload");
+      if(!auth?.user?.id) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      const { id } = c.req.valid("param");
+      if(!id) {
+        return c.json({ error: "Missing id" }, 400);
+      }
+      
+      const [data] = await db.delete(accounts)
+        .where(and(
+          eq(accounts.userId, auth.user.id),
+          eq(accounts.id, parseInt(id)),
+        ))
+        .returning({ id: accounts.id });
+        
+      if(!data) {
+        return c.json({ error: "Account not found" }, 404);
+      }
+      
+      return c.json({ data });
+    }
   );
 
 export default app;
