@@ -7,13 +7,13 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Loader2 } from "lucide-react";
 
-import { useCreateAccount } from "@/features/accounts/api/use-create-account";
-import { useGetAccount } from "@/features/accounts/api/use-get-account";
-import { useOpenAccount } from "@/features/accounts/hooks/use-open-account";
 import { AccountForm } from "@/features/accounts/components/account-form";
 import { insertAccountSchema } from "@/db/schema";
-import { Loader2 } from "lucide-react";
+import { useGetAccount } from "@/features/accounts/api/use-get-account";
+import { useOpenAccount } from "@/features/accounts/hooks/use-open-account";
+import { useEditAccount } from "@/features/accounts/api/use-edit-account";
 
 const formSchema = insertAccountSchema.pick({ name: true });
 type FormValues = z.input<typeof formSchema>;
@@ -22,9 +22,10 @@ export function EditAccountSheet() {
   const { isOpen, onClose, id } = useOpenAccount();
   
   const accountQuery = useGetAccount(id);
-  const mutation = useCreateAccount();
+  const mutation = useEditAccount(id);
   
   const isLoading = accountQuery.isLoading;
+  const isPending = mutation.isPending;
   
   const onSubmit = (values: FormValues) => {
     mutation.mutate(values, {
@@ -56,7 +57,7 @@ export function EditAccountSheet() {
             id={id}
             onSubmit={onSubmit}
             defaultValues={defaultValues}
-            disabled={mutation.isPending}
+            disabled={isPending}
           />
         )}
       </SheetContent>
