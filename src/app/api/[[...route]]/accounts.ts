@@ -1,15 +1,16 @@
+import z from "zod";
 import { Hono } from "hono";
+import { zValidator } from "@hono/zod-validator";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { eq } from "drizzle-orm";
 
-import { accounts, users } from "@/db/schema";
+import { accounts, insertAccountSchema } from "@/db/schema";
 
 const db = drizzle({ connection: process.env.DRIZZLE_DATABASE_URL!, casing: "snake_case" });
 
 const app = new Hono()
   .get("/", async (c) => {
     const auth = c.get("jwtPayload");
-    
     if(!auth?.user?.id) {
       return c.json({ error: "Unauthorized" }, 401);
     }
@@ -23,6 +24,25 @@ const app = new Hono()
     .where(eq(accounts.id, auth.user.id));
 
     return c.json({ data });
-  });
+  })
+  .post("/", 
+    zValidator("json", insertAccountSchema.pick({
+      name: true,
+    })), 
+    async (c) => {
+      const auth = c.get("jwtPayload");
+      if(!auth?.user?.id) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+      
+      const values = c.req.valid("json");
+      const [data] = await db.insert(accounts).values({
+        userId: auth.user.id,
+        ...values
+      }).returning();
+      
+      return c.json({ data });
+    }
+  );
 
 export default app;

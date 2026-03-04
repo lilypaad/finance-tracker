@@ -7,6 +7,8 @@ import {
   uniqueIndex, 
 } from "drizzle-orm/pg-core";
 
+import { createInsertSchema } from "drizzle-zod";
+
 const timestamps = {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at"),
@@ -25,7 +27,7 @@ export const users = pgTable(
     role: rolesEnum().default("user"),
     passwordHash: varchar("password_hash", { length: 255 }).notNull(),
     passwordSalt: varchar("password_salt", { length: 255 }).notNull(),
-  }, 
+  },
   (table) => [ uniqueIndex("email_idx").on(table.email) ]
 );
 
@@ -37,3 +39,5 @@ export const accounts = pgTable(
     userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }),
   },
 );
+
+export const insertAccountSchema = createInsertSchema(accounts);
