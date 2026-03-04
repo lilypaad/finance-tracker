@@ -15,20 +15,20 @@ export default async function Home() {
 
   return (
     <main className="flex h-full flex-col items-center justify-center">
-      {!session && 
-      <Card className='w-xl max-w-lg mx-auto mt-12'>
-        <CardHeader>
-          <CardTitle>Log In</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <LogInForm />
-        </CardContent>
-      </Card>
-      }
+      {!session && (
+        <Card className='w-xl max-w-lg mx-auto mt-12'>
+          <CardHeader>
+            <CardTitle>Log In</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <LogInForm />
+          </CardContent>
+        </Card>
+      )}
 
-      {session && 
-      <pre>{ JSON.stringify(session, null, 2) }</pre>
-      }
+      {session && (
+        <pre>{ JSON.stringify(session, null, 2) }</pre>
+      )}
     </main>
   );
 }
