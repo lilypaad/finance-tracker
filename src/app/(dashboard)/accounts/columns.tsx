@@ -8,6 +8,8 @@ import { ArrowUpDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 
+import { Actions } from "./actions"
+
 export type Account = InferResponseType<typeof client.api.accounts.$get, 200>["data"][0]
 
 export const columns: ColumnDef<Account>[] = [
@@ -47,4 +49,8 @@ export const columns: ColumnDef<Account>[] = [
       )
     },
   },
+  {
+    id: "actions",
+    cell: ({ row }) => <Actions id={String(row.original.id)} />,
+  }
 ]

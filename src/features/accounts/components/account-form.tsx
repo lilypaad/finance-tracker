@@ -46,7 +46,7 @@ export function AccountForm({
   };
 
   return (
-    <form className="space-y-6" onSubmit={form.handleSubmit(handleSubmit)}>
+    <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
       <FieldGroup>
         <Controller
           control={form.control}
@@ -68,7 +68,7 @@ export function AccountForm({
         />
       </FieldGroup>
 
-      <Button type="submit" className="w-full" disabled={disabled} type="submit">
+      <Button type="submit" className="w-full" disabled={disabled}>
         {id ? "Save changes" : "Create account"}
       </Button>
 
@@ -78,6 +78,7 @@ export function AccountForm({
           disabled={disabled}
           onClick={handleDelete}
           variant="outline"
+          className="w-full"
         >
           <Trash className="size-4 mr-2" />
           Delete account
