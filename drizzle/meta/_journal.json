@@ -43,6 +43,13 @@
       "when": 1772626869326,
       "tag": "0005_careless_rawhide_kid",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1772706495733,
+      "tag": "0006_lucky_blob",
+      "breakpoints": true
     }
   ]
 }
