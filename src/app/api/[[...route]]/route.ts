@@ -6,6 +6,7 @@ import type { JwtVariables } from "hono/jwt";
 import users from "./users";
 import accounts from "./accounts";
 import categories from "./categories";
+import transactions from "./transactions";
 
 const app = new Hono<{ Variables: JwtVariables }>().basePath("/api");
 
@@ -21,7 +22,8 @@ app.use("/*", (c, next) => {
 const routes = app
   .route("/users", users)
   .route("/accounts", accounts)
-  .route("/categories", categories);
+  .route("/categories", categories)
+  .route("/transactions", transactions);
 
 export const GET = handle(app);
 export const POST = handle(app);
