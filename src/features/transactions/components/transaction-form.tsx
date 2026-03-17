@@ -14,6 +14,8 @@ import {
 } from '@/components/ui/field';
 
 import { insertTransactionSchema } from "@/db/schema";
+import { DatePicker } from "@/components/date-picker";
+import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = insertTransactionSchema;
 type FormValues = z.input<typeof formSchema>;
@@ -60,6 +62,21 @@ export function TransactionForm({
       <FieldGroup>
         <Controller
           control={form.control}
+          name="date"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <DatePicker
+                value={field.value}
+                onChange={field.onChange}
+                disabled={disabled}
+              />
+              {fieldState.invalid && (<FieldError errors={[fieldState.error]} />)}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
           name="accountId"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
@@ -90,6 +107,56 @@ export function TransactionForm({
                 onChangeAction={field.onChange}
                 value={field.value}
                 disabled={disabled}
+              />
+              {fieldState.invalid && (<FieldError errors={[fieldState.error]} />)}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="payee"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="payee">Payee</FieldLabel>
+              <Input
+                placeholder="Add a payee"
+                disabled={disabled}
+                {...field}
+              />
+              {fieldState.invalid && (<FieldError errors={[fieldState.error]} />)}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="notes"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="notes">Notes</FieldLabel>
+              <Input
+                {...field}
+                value={field.value ?? ""}
+                disabled={disabled}
+                placeholder="Add a note (optional)"
+              />
+              {fieldState.invalid && (<FieldError errors={[fieldState.error]} />)}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="notes"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="notes">Notes</FieldLabel>
+              <Textarea
+                {...field}
+                value={field.value ?? ""}
+                disabled={disabled}
+                placeholder="Add a note (optional)"
               />
               {fieldState.invalid && (<FieldError errors={[fieldState.error]} />)}
             </Field>
