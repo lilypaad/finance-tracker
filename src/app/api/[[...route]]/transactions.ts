@@ -98,7 +98,9 @@ const app = new Hono()
     }
   )
   .post("/",
-    zValidator("json", insertTransactionSchema),
+    zValidator("json", insertTransactionSchema.omit({
+      userId: true,
+    })),
     async (c) => {
       const auth = c.get("jwtPayload");
       if(!auth?.user?.id) {
@@ -108,6 +110,7 @@ const app = new Hono()
       const values = c.req.valid("json");
 
       const [data] = await db.insert(transactions).values({
+        userId: auth.user.id,
         ...values
       }).returning();
 
