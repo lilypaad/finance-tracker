@@ -18,8 +18,15 @@ import { useGetCategories } from "@/features/categories/api/use-get-categories";
 import { useCreateCategory } from "@/features/categories/api/use-create-category";
 import { useGetAccounts } from "@/features/accounts/api/use-get-accounts";
 import { useCreateAccount } from "@/features/accounts/api/use-create-account";
+import { convertAmountToMiliunits } from "@/lib/utils";
 
-const formSchema = insertTransactionSchema;
+const formSchema = insertTransactionSchema.omit({ userId: true }).extend({
+  amount: z.string(),
+  payee: z.string().optional(),
+  notes: z.string().optional(),
+  accountId: z.string(),
+  categoryId: z.string().optional(),
+});
 type FormValues = z.input<typeof formSchema>;
 
 export function NewTransactionSheet() {
@@ -32,7 +39,7 @@ export function NewTransactionSheet() {
   const onCreateCateogry = (name: string) => categoryMutation.mutate({ name });
   const categoryOptions = (categoryQuery.data ?? []).map((category) => ({
     label: category.name,
-    value: category.id,
+    value: category.id.toString(),
   }));
 
   const accountQuery = useGetAccounts();
@@ -40,13 +47,24 @@ export function NewTransactionSheet() {
   const onCreateAccount = (name: string) => accountMutation.mutate({ name });
   const accountOptions = (accountQuery.data ?? []).map((account) => ({
     label: account.name,
-    value: account.id,
+    value: account.id.toString(),
   }));
 
   const isLoading = categoryQuery.isLoading || accountQuery.isLoading;
 
   const onSubmit = (values: FormValues) => {
-    createMutation.mutate(values, {
+    const amount = parseFloat(values.amount);
+    const amountInMiliunits = convertAmountToMiliunits(amount);
+
+    const out = {
+      ...values,
+      amount: amountInMiliunits,
+      accountId: parseInt(values.accountId),
+      categoryId: values.categoryId ? parseInt(values.categoryId) : undefined,
+    }
+    console.log(out);
+
+    createMutation.mutate(out, {
       onSuccess: () => {
         onClose();
       }
@@ -76,6 +94,14 @@ export function NewTransactionSheet() {
             onCreateCategory={onCreateCateogry}
             onCreateAccount={onCreateAccount}
             disabled={createMutation.isPending || categoryMutation.isPending || accountMutation.isPending}
+            defaultValues={{
+              date: new Date(),
+              amount: "0.00",
+              payee: "",
+              notes: "",
+              accountId: "",
+              categoryId: undefined,
+            }}
           />
         )}
       </SheetContent>

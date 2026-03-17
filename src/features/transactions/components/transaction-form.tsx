@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { Trash } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -16,8 +15,16 @@ import {
 import { insertTransactionSchema } from "@/db/schema";
 import { DatePicker } from "@/components/date-picker";
 import { Textarea } from "@/components/ui/textarea";
+import { AmountInput } from "@/components/amount-input";
 
-const formSchema = insertTransactionSchema;
+const formSchema = insertTransactionSchema.omit({ userId: true })
+.extend({
+  amount: z.string(),
+  payee: z.string().optional(),
+  notes: z.string().optional(),
+  accountId: z.string(),
+  categoryId: z.string().optional(),
+});
 type FormValues = z.input<typeof formSchema>;
 
 type Props = {
@@ -33,7 +40,6 @@ type Props = {
 };
 
 export function TransactionForm({
-  id,
   defaultValues,
   onSubmit,
   onDelete,
@@ -49,12 +55,7 @@ export function TransactionForm({
   });
 
   const handleSubmit = (values: FormValues) => {
-    console.log({ values });
-    // onSubmit(values);
-  };
-
-  const handleDelete = () => {
-    onDelete?.();
+    onSubmit(values);
   };
 
   return (
@@ -120,9 +121,12 @@ export function TransactionForm({
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="payee">Payee</FieldLabel>
               <Input
+                {...field}
+                id={field.name}
+                type="text"
                 placeholder="Add a payee"
                 disabled={disabled}
-                {...field}
+                aria-invalid={fieldState.invalid}
               />
               {fieldState.invalid && (<FieldError errors={[fieldState.error]} />)}
             </Field>
@@ -131,15 +135,15 @@ export function TransactionForm({
 
         <Controller
           control={form.control}
-          name="notes"
+          name="amount"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="notes">Notes</FieldLabel>
-              <Input
-                {...field}
-                value={field.value ?? ""}
+              <FieldLabel htmlFor="amount">Amount</FieldLabel>
+              <AmountInput
+                value={field.value}
+                onChange={field.onChange}
                 disabled={disabled}
-                placeholder="Add a note (optional)"
+                placeholder=""
               />
               {fieldState.invalid && (<FieldError errors={[fieldState.error]} />)}
             </Field>
@@ -165,22 +169,8 @@ export function TransactionForm({
       </FieldGroup>
 
       <Button type="submit" className="w-full" disabled={disabled}>
-        {id ? "Save changes" : "Create account"}
+        Create transaction
       </Button>
-
-      {!!id && (
-        <Button
-          type="button"
-          disabled={disabled}
-          onClick={handleDelete}
-          variant="outline"
-          className="w-full"
-        >
-          <Trash className="size-4 mr-2" />
-          Delete account
-        </Button>
-      )}
     </form>
-
-  )
+  );
 }

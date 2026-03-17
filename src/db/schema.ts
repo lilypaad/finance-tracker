@@ -1,12 +1,12 @@
 import * as z from "zod";
 
-import { 
-  pgTable, 
+import {
+  pgTable,
   pgEnum,
-  integer, 
+  integer,
   timestamp,
   varchar,
-  uniqueIndex, 
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
@@ -20,7 +20,7 @@ const timestamps = {
 export const rolesEnum = pgEnum("roles", ["user", "admin"]);
 
 export const users = pgTable(
-  "users", 
+  "users",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     email: varchar({ length: 255 }).notNull().unique(),
@@ -38,7 +38,7 @@ export const usersRelations = relations(users, ({ many }) => ({
 }));
 
 export const accounts = pgTable(
-  "accounts", 
+  "accounts",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     name: varchar("name").notNull(),
@@ -95,5 +95,5 @@ export const transactionsRelations = relations(transactions, ({ one }) => ({
 export const insertAccountSchema = createInsertSchema(accounts);
 export const insertCategorySchema = createInsertSchema(categories);
 export const insertTransactionSchema = createInsertSchema(transactions, {
-  date: z.coerce.date(),
+  date: z.coerce.date<Date>(),
 });
