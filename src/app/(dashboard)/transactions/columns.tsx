@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { InferResponseType } from "hono"
-import { client } from "@/lib/hono"
-import { format } from "date-fns"
+import { InferResponseType } from "hono";
+import { client } from "@/lib/hono";
+import { format } from "date-fns";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 
-import { Actions } from "./actions"
-import { cn, convertAmountFromMiliunits, formatCurrency } from "@/lib/utils"
+import { Actions } from "./actions";
+import { cn, convertAmountFromMiliunits, formatCurrency } from "@/lib/utils";
 
-export type Transaction = InferResponseType<typeof client.api.transactions.$get, 200>["data"][0]
+export type Transaction = InferResponseType<typeof client.api.transactions.$get, 200>["data"][0];
 
 export const columns: ColumnDef<Transaction>[] = [
   {
