@@ -118,6 +118,23 @@ const app = new Hono()
       return c.json({ data });
     }
   )
+  .post("/bulk-create",
+    zValidator("json", z.array(insertTransactionSchema)),
+    async (c) => {
+      const auth = c.get("jwtPayload");
+      if(!auth?.user?.id) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      const values = c.req.valid("json");
+
+      const data = await db.insert(transactions).values(
+        values.map((val) => ({ ...val }))
+      ).returning();
+
+      return c.json({ data });
+    }
+  )
   .post("/bulk-delete",
     zValidator("json", z.object({ ids: z.array(z.int()) })),
     async (c) => {
