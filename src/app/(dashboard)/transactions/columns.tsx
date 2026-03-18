@@ -11,6 +11,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 import { Actions } from "./actions";
 import { cn, convertAmountFromMiliunits, formatCurrency } from "@/lib/utils";
+import { AccountColumn } from "./account-column";
+import { CategoryColumn } from "./category-column";
 
 export type Transaction = InferResponseType<typeof client.api.transactions.$get, 200>["data"][0];
 
@@ -77,9 +79,10 @@ export const columns: ColumnDef<Transaction>[] = [
     },
     cell: ({ row }) => {
       return (
-        <span>
-          {row.original.account.name}
-        </span>
+        <AccountColumn
+          accountName={row.original.account.name}
+          accountId={row.original.account.id.toString()}
+        />
       );
     }
   },
@@ -99,9 +102,10 @@ export const columns: ColumnDef<Transaction>[] = [
     },
     cell: ({ row }) => {
       return (
-        <span>
-          {row.original.category ?? "-"}
-        </span>
+        <CategoryColumn
+          categoryId={row.original.category?.id}
+          categoryName={row.original.category?.name}
+        />
       );
     }
   },
