@@ -160,7 +160,7 @@ const app = new Hono()
   )
   .patch("/:id",
     zValidator("param", z.object({ id: z.string().optional() })),
-    zValidator("json", insertTransactionSchema),
+    zValidator("json", insertTransactionSchema.omit({ userId: true })),
     async (c) => {
       const auth = c.get("jwtPayload");
       if(!auth?.user?.id) {
