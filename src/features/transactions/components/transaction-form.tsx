@@ -40,6 +40,7 @@ type Props = {
 };
 
 export function TransactionForm({
+  id,
   defaultValues,
   onSubmit,
   onDelete,
@@ -81,7 +82,7 @@ export function TransactionForm({
           name="accountId"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="name">Account</FieldLabel>
+              <FieldLabel htmlFor="accountId">Account</FieldLabel>
               <Select
                 placeholder="Select an account"
                 options={accountOptions}
@@ -100,7 +101,7 @@ export function TransactionForm({
           name="categoryId"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="name">Account</FieldLabel>
+              <FieldLabel htmlFor="categoryId">Category</FieldLabel>
               <Select
                 placeholder="Select an category"
                 options={categoryOptions}
@@ -143,7 +144,7 @@ export function TransactionForm({
                 value={field.value}
                 onChange={field.onChange}
                 disabled={disabled}
-                placeholder=""
+                placeholder="0.00"
               />
               {fieldState.invalid && (<FieldError errors={[fieldState.error]} />)}
             </Field>
@@ -169,7 +170,7 @@ export function TransactionForm({
       </FieldGroup>
 
       <Button type="submit" className="w-full" disabled={disabled}>
-        Create transaction
+        {id ? "Edit transaction" : "Create transaction"}
       </Button>
     </form>
   );
