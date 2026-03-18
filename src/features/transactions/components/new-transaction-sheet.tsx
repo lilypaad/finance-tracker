@@ -71,6 +71,15 @@ export function NewTransactionSheet() {
     });
   };
 
+  const defaultValues = {
+    date: new Date(),
+    amount: undefined,
+    payee: undefined,
+    notes: undefined,
+    accountId: undefined,
+    categoryId: undefined,
+  };
+
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent className="px-4">
@@ -94,14 +103,7 @@ export function NewTransactionSheet() {
             onCreateCategory={onCreateCateogry}
             onCreateAccount={onCreateAccount}
             disabled={createMutation.isPending || categoryMutation.isPending || accountMutation.isPending}
-            defaultValues={{
-              date: new Date(),
-              amount: "0.00",
-              payee: "",
-              notes: "",
-              accountId: "",
-              categoryId: undefined,
-            }}
+            defaultValues={defaultValues}
           />
         )}
       </SheetContent>
