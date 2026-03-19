@@ -1,13 +1,14 @@
 import LogInForm from '@/components/login-form';
 import { getSession } from "@/lib/auth";
-
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+
 import { DataGrid } from "@/components/data-grid";
+import { DataCharts } from '@/features/summary/components/data-charts';
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -28,6 +29,7 @@ export default async function DashboardPage() {
       {session && (
         <div className="max-w-screen-2xl mx-auto w-full pb-10 -mt-24">
           <DataGrid />
+          <DataCharts />
         </div>
       )}
     </main>
