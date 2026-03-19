@@ -82,11 +82,13 @@ async function main() {
 
   try {
     // Clear db
+    console.log("Clearing database...");
     await db.delete(transactions);
     await db.delete(accounts);
     await db.delete(categories);
 
     // Create dummy categories and accounts
+    console.log("Creating dummy accounts and categories...");
     await db.insert(categories).values(SEED_CATEGORIES).execute();
     await db.insert(accounts).values(SEED_ACCOUNTS).execute();
 
@@ -95,6 +97,7 @@ async function main() {
     const categoryList = await db.select().from(categories);
 
     // Generate and insert dummy transactions
+    console.log("Generating transactions...");
     generateTransactions(checking.id, categoryList);
     await db.insert(transactions).values(SEED_TRANSACTIONS).execute();
   }
