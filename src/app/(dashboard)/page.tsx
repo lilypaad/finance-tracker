@@ -1,16 +1,15 @@
-import { Button } from "@/components/ui/button";
 import LogInForm from '@/components/login-form';
 import { getSession } from "@/lib/auth";
 
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { DataGrid } from "@/components/data-grid";
 
-export default async function Home() {
+export default async function DashboardPage() {
   const session = await getSession();
 
   return (
@@ -27,7 +26,9 @@ export default async function Home() {
       )}
 
       {session && (
-        <pre>{ JSON.stringify(session, null, 2) }</pre>
+        <div className="max-w-screen-2xl mx-auto w-full pb-10 -mt-24">
+          <DataGrid />
+        </div>
       )}
     </main>
   );
