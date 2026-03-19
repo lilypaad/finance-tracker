@@ -59,7 +59,7 @@ const app = new Hono()
 
       const categoryData = await db.select({
         name: categories.name,
-        value: sql<number>`sum(${transactions.amount})`,
+        value: sql<number>`sum(abs(${transactions.amount}))`,
       })
       .from(transactions)
       .innerJoin(accounts, eq(transactions.accountId, accounts.id))
@@ -75,7 +75,7 @@ const app = new Hono()
       const activeDays = await db.select({
         date: transactions.date,
         income: sql<number>`sum(case when ${transactions.amount} >= 0 then ${transactions.amount} else 0 end)`,
-        expenses: sql<number>`sum(case when ${transactions.amount} < 0 then ${transactions.amount} else 0 end)`,
+        expenses: sql<number>`sum(case when ${transactions.amount} < 0 then abs(${transactions.amount}) else 0 end)`,
       })
       .from(transactions)
       .innerJoin(accounts, eq(transactions.accountId, accounts.id))
