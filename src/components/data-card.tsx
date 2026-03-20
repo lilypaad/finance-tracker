@@ -94,8 +94,10 @@ export function DataCard({icon: Icon, title, value=0, variant, dateRange, percen
             </h1>
             <p className={cn(
               "text-muted-foreground text-sm line-clamp-1",
-              percentChange > 0 && "text-emerald-500",
-              percentChange < 0 && "text-rose-500",
+              title === "Expenses" && percentChange < 0 && "text-emerald-500",
+              title === "Expenses" && percentChange > 0 && "text-rose-500",
+              title !== "Expenses" && percentChange > 0 && "text-emerald-500",
+              title !== "Expenses" && percentChange < 0 && "text-rose-500",
             )}>
               {formatPercent(percentChange, { addPrefix: true })} from last period
             </p>
