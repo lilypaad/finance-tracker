@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Budgie
+
+Budgie is a personal finance web application that helps you track your budgeting and expenses.
+
+Built with [Next.js](https://nextjs.org/).
+
+![A screenshot of the application's overview page](screenshot.png)
 
 ## Getting Started
 
-First, run the development server:
+Make sure your environment variables are setup. The application expects the following variables:
+
+```bash
+# The port the application will run on
+PORT=3000
+
+# The database URL (expects PostgreSQL)
+DRIZZLE_DATABASE_URL="postgres://admin:password@localhost:1234/postgres"
+
+# Your generated secret key for authentication. Can be generated with `npx auth`.
+AUTH_SECRET_KEY="u05Yd9tNM/uPch+w9BGvQFcSUt7qNnO0L4IHCIJem74="
+
+# Your app URL
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+Set up your database with Drizzle migrations:
+
+```bash
+npx drizzle-kit migrate
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Sample data can be generated with the included seed script:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run db:seed
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000) with your browser to use the application.
