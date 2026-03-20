@@ -8,7 +8,7 @@ Built with [Next.js](https://nextjs.org/).
 
 ## Getting Started
 
-Make sure your environment variables are setup. The application expects the following variables:
+Make sure your environment variables are setup. Include the following in your `.env` file in the project root:
 
 ```bash
 # The port the application will run on
